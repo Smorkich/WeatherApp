@@ -2,11 +2,14 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using WeatherApp.Model;
+using WeatherApp.Service;
 
 namespace WeatherApp
 {
@@ -16,9 +19,13 @@ namespace WeatherApp
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly string apiKey = "9a226768560941c1b51225957241901";
+        private readonly string? PATH = $"{Environment.CurrentDirectory}\\cities.json"; 
         private string cityName;
+        private BindingList<City> cities;
+        private FileIOService fileIOService;
 
         private DateTime now;
+
         public DateTime Now
         {
             get
@@ -34,6 +41,18 @@ namespace WeatherApp
         public MainWindow()
         {
             InitializeComponent();
+            fileIOService = new FileIOService(PATH);
+            try
+            {
+                cities = fileIOService.LoadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            CmbBox.ItemsSource = cities.Select(x => x.Name);
+            CmbBox.Text = CmbBox.Items[0].ToString();
             DataContext = this;
 
             lblDigitalClock.Visibility = Visibility.Hidden;
@@ -46,7 +65,7 @@ namespace WeatherApp
 
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged(String propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -74,7 +93,7 @@ namespace WeatherApp
                         using (StreamReader reader = new StreamReader(stream))
                         {
                             string jsonResponse = reader.ReadToEnd();
-                            WeatherData weatherData = JsonConvert.DeserializeObject<WeatherData>(jsonResponse);
+                            WeatherData? weatherData = JsonConvert.DeserializeObject<WeatherData>(jsonResponse);
                             DisplayWeatherData(weatherData);
                         }
                     }
@@ -101,8 +120,6 @@ namespace WeatherApp
             weatherIcon.UriSource = new Uri("http:" + weatherData.Current.Condition.Icon);
             weatherIcon.EndInit();
             imgWeatherIcon.Source = weatherIcon;
-
-
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -111,6 +128,16 @@ namespace WeatherApp
             {
                 this.DragMove();
             }
+        }
+        private void CmbBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            txtCityName.Text = CmbBox.SelectedItem.ToString();
+        }
+
+        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            AddCityWindow addCityWindow = new AddCityWindow(PATH, cities);
+            addCityWindow.Show();
         }
     }
 }

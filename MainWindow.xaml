@@ -5,10 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WeatherApp"
         mc:Ignorable="d"
-        Title="" Height="425" Width="250"
+        Title="" Height="550" Width="500"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="SingleBorderWindow"
-        AllowsTransparency="False"
         Background="Transparent"
         MouseDown="Window_MouseDown"
         MaxHeight="550"
@@ -108,6 +106,17 @@
             <Label Content="Wind Speed" Foreground="AliceBlue"
                    HorizontalAlignment="Center"
                    FontSize="10" RenderTransformOrigin="0.491,0.004"/>
+
+            <ComboBox VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      x:Name="CmbBox"
+                      Width="120"
+                      Height="50"
+                      Margin="20 20"
+                      SelectionChanged="CmbBox_SelectionChanged"
+                      HorizontalContentAlignment="center"
+                     
+                      Style="{StaticResource CBox}" Opacity="0.5"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2"
@@ -122,6 +131,8 @@
                    HorizontalAlignment="Center"
                    FontSize="10"/>
         </StackPanel>
+        
+        
 
         <StackPanel Grid.Row="3"
                     Grid.ColumnSpan="3"
@@ -135,10 +146,27 @@
                     Width="200"
                     Margin="10"
                     x:Name="btnGetWeather"
-                    Content="Get weather"
                     Click="btnGetWeather_Click"
                     FontSize="11"
                     Style="{StaticResource RoundedButtonStyle}"/>
         </StackPanel>
+        <Button Height="35"
+                    Width="50"
+                    Grid.Row="3"
+                    VerticalAlignment="Center"
+                    x:Name="btnAdd"
+                    Content="Add City"
+                    Click="btnAdd_Click"
+                    FontSize="11"
+                    Style="{StaticResource RoundedButtonStyle}"/>
+        <Button Height="35"
+                    Width="50"
+                    Grid.Row="3"
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    x:Name="btnForecast"
+                    Content="Forecast"
+                    FontSize="11"
+                    Style="{StaticResource RoundedButtonStyle}"/>
     </Grid>
 </Window>
